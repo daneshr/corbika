@@ -5,19 +5,11 @@ import org.joda.time.DateTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -63,6 +55,16 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private List<Authority> authorities;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<GameUser> games = new ArrayList<>();
+
+    @Column(name = "determent")
+    private boolean determent = false;
 
     public Long getId() {
         return id;
@@ -166,4 +168,20 @@ public class User implements UserDetails {
         return true;
     }
 
+    public List<GameUser> getGames() {
+        return games;
+    }
+
+    public void setgames(List<GameUser> games) {
+        this.games = games;
+    }
+
+
+    public boolean isDeterment() {
+        return determent;
+    }
+
+    public void setDeterment(boolean determent) {
+        this.determent = determent;
+    }
 }
