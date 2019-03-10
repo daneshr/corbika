@@ -14,9 +14,16 @@ public class Choice {
     @Column(name = "choice")
     private String choice;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @MapsId("gameDefinitionId")
-    private GameDefinition gameDefinition;
+    @Column(name = "value")
+    private Long value;
+
+    public Choice() {
+    }
+
+    public Choice(Long value, String choice) {
+        this.choice = choice;
+        this.value = value;
+    }
 
     public String getChoice() {
         return choice;
@@ -26,11 +33,11 @@ public class Choice {
         this.choice = choice;
     }
 
-    public GameDefinition getGameDefinition() {
-        return gameDefinition;
+    public Long getValue() {
+        return value;
     }
 
-    public void setGameDefinition(GameDefinition gameDefinition) {
-        this.gameDefinition = gameDefinition;
+    public void setValue(Long value) {
+        this.value = value;
     }
 }

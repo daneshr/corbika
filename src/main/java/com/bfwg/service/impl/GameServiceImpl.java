@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import javax.xml.transform.sax.SAXSource;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +70,8 @@ public class GameServiceImpl implements GameService {
         start(gameDefinition);
     }
 
-    private void start(GameDefinition gameDefinition) {
+    @Transactional
+    public void start(GameDefinition gameDefinition) {
         List<User> users = userRepository.findAllByDeterment(false);
         Game game = new Game();
         game.setGameDefinition(gameDefinition);
@@ -80,7 +82,13 @@ public class GameServiceImpl implements GameService {
 
         players.forEach(user -> game.addUserAsPlayer(user));
         anticipators.forEach(user -> game.addUserAsAnticipator(user));
-        gameRepository.saveAndFlush(game);
+        if(players.size()>0){
+            gameDefinition.setChoices(new ArrayList<>());
+            players.forEach(player-> gameDefinition.addChoice(new Choice(player.getId(),player.getFirstName() + "  " + player.getLastName())));
+        }
+
+        gameRepository.save(game);
+        gameDefinitionRepository.save(gameDefinition);
 
         System.out.println();
 //        excludePlayers

@@ -48,11 +48,10 @@ public class GameDefinition  {
     private Long answer;
 
     @OneToMany(
-            mappedBy = "gameDefinition",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Choice> choises;
+    private List<Choice> choices;
 
     public Long getId() {
         return id;
@@ -126,4 +125,16 @@ public class GameDefinition  {
     public void setAnswer(Long answer) {
         this.answer = answer;
     }
+
+    public List<Choice> getChoices() {
+        return choices;
+    }
+
+    public void setChoices(List<Choice> choices) {
+        this.choices = choices;
+    }
+    public void addChoice(Choice choice) {
+        this.choices.add(choice);
+    }
+
 }
