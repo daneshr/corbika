@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping( value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE )
+@RequestMapping( value = "/api", produces = MediaType.APPLICATION_JSON_VALUE )
 public class GameDefinitonController {
 
     @Autowired
