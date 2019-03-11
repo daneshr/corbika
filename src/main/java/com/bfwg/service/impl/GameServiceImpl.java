@@ -70,6 +70,25 @@ public class GameServiceImpl implements GameService {
         start(gameDefinition);
     }
 
+    @Override
+    public Game getUserGame(String username) {
+        List<Game> runnings = gameRepository.findAllByRunning(true);
+        if (runnings.size() == 0) {
+            throw new RuntimeException("there is no running game!");
+        }else if (runnings.size() != 1 ){
+            throw new RuntimeException("more than one running game!");
+        }
+        Game candidateGame = runnings.get(0);
+        for (GameUser gameUser:candidateGame.getAnticipators()) {
+            if (gameUser.getUser().getUsername().compareTo(username)==0){
+                return candidateGame;
+            }
+        }
+        throw new RuntimeException("there is no suitable running game!");
+
+
+    }
+
     @Transactional
     public void start(GameDefinition gameDefinition) {
         List<User> users = userRepository.findAllByDeterment(false);

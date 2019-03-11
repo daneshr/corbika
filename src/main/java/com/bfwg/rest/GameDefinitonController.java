@@ -1,18 +1,19 @@
 package com.bfwg.rest;
 
 import com.bfwg.model.GameDefinition;
+import com.bfwg.model.User;
 import com.bfwg.model.dto.Winner;
 import com.bfwg.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.parser.Entity;
+import java.security.Principal;
 import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
 @RestController
 @RequestMapping( value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE )
@@ -44,5 +45,11 @@ public class GameDefinitonController {
     public ResponseEntity < String > startGame(@RequestBody GameDefinition gameDefinition) {
         gameService.startGame(gameDefinition.getId());
         return ResponseEntity.accepted().body("ok");
+    }
+
+    @RequestMapping("/game/mine")
+    public Object user(Principal user) {
+        return gameService.getUserGame(user.getName());
+
     }
 }

@@ -1,5 +1,6 @@
 package com.bfwg.service;
 
+import com.bfwg.model.Game;
 import com.bfwg.model.GameDefinition;
 import com.bfwg.model.User;
 import com.bfwg.model.dto.Winner;
@@ -20,4 +21,6 @@ public interface GameService {
     void updateWinner(Winner winner);
 
     void startGame(Long gameId);
+
+    Game getUserGame(String username);
 }
