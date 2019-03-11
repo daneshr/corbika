@@ -1,8 +1,7 @@
 package com.bfwg.service;
 
-import com.bfwg.model.Game;
 import com.bfwg.model.GameDefinition;
-import com.bfwg.model.User;
+import com.bfwg.model.dto.RunningGame;
 import com.bfwg.model.dto.Winner;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -22,5 +21,7 @@ public interface GameService {
 
     void startGame(Long gameId);
 
-    Game getUserGame(String username);
+    RunningGame getUserGame(String username);
+
+    void voteGame(String username, Long gameId, Long choice);
 }

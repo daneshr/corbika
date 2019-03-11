@@ -2,6 +2,8 @@ package com.bfwg.rest;
 
 import com.bfwg.model.GameDefinition;
 import com.bfwg.model.User;
+import com.bfwg.model.dto.RunningGame;
+import com.bfwg.model.dto.Vote;
 import com.bfwg.model.dto.Winner;
 import com.bfwg.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +49,19 @@ public class GameDefinitonController {
         return ResponseEntity.accepted().body("ok");
     }
 
-    @RequestMapping("/game/mine")
-    public Object user(Principal user) {
+    @RequestMapping(value = "/game/mine", method = RequestMethod.GET)
+    public RunningGame user(Principal user) {
         return gameService.getUserGame("admin");
 //        return gameService.getUserGame(user.getName());
+
+    }
+
+    @RequestMapping("/game/vote")
+    public String user(Principal user,@RequestBody Vote vote) {
+        return "";
+//        String username = gameService.getUserGame("admin");
+//        String username = gameService.getUserGame(user.getName());
+
 
     }
 }

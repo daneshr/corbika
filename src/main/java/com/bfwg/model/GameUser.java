@@ -3,9 +3,6 @@ package com.bfwg.model;
 import javax.persistence.*;
 import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
 @Entity(name = "GameUser")
 @Table(name="game_user")
@@ -34,6 +31,9 @@ public class GameUser {
         this.id = new GameUserId(game.getId(), user.getId());
     }
 
+    public GameUser(){
+
+    }
     public GameUserId getId() {
         return id;
     }

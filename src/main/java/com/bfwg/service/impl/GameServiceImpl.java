@@ -1,6 +1,7 @@
 package com.bfwg.service.impl;
 
 import com.bfwg.model.*;
+import com.bfwg.model.dto.RunningGame;
 import com.bfwg.model.dto.Winner;
 import com.bfwg.repository.GameDefinitionRepository;
 import com.bfwg.repository.GameRepository;
@@ -12,7 +13,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import javax.xml.transform.sax.SAXSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +71,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game getUserGame(String username) {
+    public RunningGame getUserGame(String username) {
         List<Game> runnings = gameRepository.findAllByRunning(true);
         if (runnings.size() == 0) {
             throw new RuntimeException("there is no running game!");
@@ -81,11 +81,16 @@ public class GameServiceImpl implements GameService {
         Game candidateGame = runnings.get(0);
         for (GameUser gameUser:candidateGame.getAnticipators()) {
             if (gameUser.getUser().getUsername().compareTo(username)==0){
-                return candidateGame;
+                return new RunningGame(candidateGame.getId(), candidateGame.getGameDefinition());
             }
         }
         throw new RuntimeException("there is no suitable running game!");
 
+
+    }
+
+    @Override
+    public void voteGame(String username, Long gameId, Long choice) {
 
     }
 
