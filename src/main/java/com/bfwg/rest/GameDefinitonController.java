@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping( value = "/api", produces = MediaType.APPLICATION_JSON_VALUE )
+@RequestMapping( value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE )
 public class GameDefinitonController {
 
     @Autowired
@@ -49,7 +49,8 @@ public class GameDefinitonController {
 
     @RequestMapping("/game/mine")
     public Object user(Principal user) {
-        return gameService.getUserGame(user.getName());
+        return gameService.getUserGame("admin");
+//        return gameService.getUserGame(user.getName());
 
     }
 }
