@@ -1,12 +1,11 @@
 package com.bfwg.model;
 
 import javax.persistence.*;
-import java.util.List;
 
 
-@Entity(name = "GameUser")
-@Table(name="game_user")
-public class GameUser {
+@Entity(name = "GamePlayer")
+@Table(name="game_player")
+public class GamePlayer {
 
     @EmbeddedId
     private GameUserId id;
@@ -22,16 +21,14 @@ public class GameUser {
     @Column(name = "score")
     private int score;
 
-    @Column(name = "asPlayer")
-    private boolean asPlayer;
 
-    public GameUser(Game game, User user) {
+    public GamePlayer(Game game, User user) {
         this.user = user;
         this.game = game;
         this.id = new GameUserId(game.getId(), user.getId());
     }
 
-    public GameUser(){
+    public GamePlayer(){
 
     }
     public GameUserId getId() {
@@ -66,12 +63,4 @@ public class GameUser {
         this.score = score;
     }
 
-
-    public boolean isAsPlayer() {
-        return asPlayer;
-    }
-
-    public void setAsPlayer(boolean asPlayer) {
-        this.asPlayer = asPlayer;
-    }
 }

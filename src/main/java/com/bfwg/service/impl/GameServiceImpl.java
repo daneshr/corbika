@@ -3,10 +3,7 @@ package com.bfwg.service.impl;
 import com.bfwg.model.*;
 import com.bfwg.model.dto.RunningGame;
 import com.bfwg.model.dto.Winner;
-import com.bfwg.repository.GameDefinitionRepository;
-import com.bfwg.repository.GameRepository;
-import com.bfwg.repository.GameUserRepository;
-import com.bfwg.repository.UserRepository;
+import com.bfwg.repository.*;
 import com.bfwg.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -34,7 +28,10 @@ public class GameServiceImpl implements GameService {
     private GameRepository gameRepository;
 
     @Autowired
-    private GameUserRepository gameUserRepository;
+    private GameAnticipatorRepository gameAnticipatorRepository;
+
+    @Autowired
+    private GamePlayerRepository gamePlayerRepository;
 
 
     public GameDefinition findById(Long id) throws AccessDeniedException {
@@ -79,7 +76,7 @@ public class GameServiceImpl implements GameService {
             throw new RuntimeException("more than one running game!");
         }
         Game candidateGame = runnings.get(0);
-        for (GameUser gameUser:candidateGame.getAnticipators()) {
+        for (GameAnticipator gameUser:candidateGame.getAnticipators()) {
             if (gameUser.getUser().getUsername().compareTo(username)==0){
                 return new RunningGame(candidateGame.getId(), candidateGame.getGameDefinition());
             }
@@ -92,13 +89,35 @@ public class GameServiceImpl implements GameService {
     @Override
     public void voteGame(String username, Long gameId, Long choice) {
 
+        User user = userRepository.findByUsername(username);
+        GameAnticipator ga= gameAnticipatorRepository.findOne(new GameUserId(gameId, user.getId()));
+        if (ga.getGame()==null){
+            throw new RuntimeException("game not found!");
+        }
+        ga.setVote(choice);
+        gameAnticipatorRepository.saveAndFlush(ga);
+
+//        Game game = gameRepository.findOne(gameId);
+//        List<GameAnticipator> gameAnticipators = game.getAnticipators();
+//        GameAnticipator candidateGameUser = null;
+//        for (GameAnticipator gameAnticipator:gameAnticipators) {
+//            if (gameAnticipator.getUser().getId().compareTo(user.getId())==0){
+//                candidateGameUser = gameAnticipator;
+//            }
+//        }
+//        if (candidateGameUser==null){
+//            throw new RuntimeException("game not found!");
+//        }
+//        candidateGameUser.setVote(choice);
+//        gameAnticipatorRepository.saveAndFlush(candidateGameUser);
+
+
     }
 
     @Transactional
     public void start(GameDefinition gameDefinition) {
         List<User> users = userRepository.findAllByDeterment(false);
         Game game = new Game();
-        game.setGameDefinition(gameDefinition);
         game.setName(gameDefinition.getName());
         game.setRunning(true);
         List<User> players = choosePlayers(gameDefinition.getPlayersCount(), users);
@@ -107,12 +126,13 @@ public class GameServiceImpl implements GameService {
         players.forEach(user -> game.addUserAsPlayer(user));
         anticipators.forEach(user -> game.addUserAsAnticipator(user));
         if(players.size()>0){
-            gameDefinition.setChoices(new ArrayList<>());
+            gameDefinition.clearChoices();
             players.forEach(player-> gameDefinition.addChoice(new Choice(player.getId(),player.getFirstName() + "  " + player.getLastName())));
         }
+        game.setGameDefinition(gameDefinition);
 
         gameRepository.save(game);
-        gameDefinitionRepository.save(gameDefinition);
+//        gameDefinitionRepository.save(gameDefinition);
 
         System.out.println();
 //        excludePlayers
@@ -138,13 +158,13 @@ public class GameServiceImpl implements GameService {
     public List<User> choosePlayers(int count, List<User> users) {
         if (count == 0)
             return new ArrayList();
-        List<Long> playedUserIds = gameUserRepository.findPlayers();
-        int candidateCount = Math.min(count, users.size() - playedUserIds.size());
+        List<GamePlayer> playedUsers = gamePlayerRepository.findAll();
+        int candidateCount = Math.min(count, users.size() - playedUsers.size());
         List<User> notPlayers = new ArrayList<>();
         for (User user : users) {
             boolean flag = false;
-            for (Long id : playedUserIds) {
-                if (id.compareTo(user.getId()) == 0) {
+            for (GamePlayer gp : playedUsers) {
+                if (gp.getUser().getId().compareTo(user.getId()) == 0) {
                     flag = true;
                     break;
                 }

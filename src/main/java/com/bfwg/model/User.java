@@ -61,7 +61,14 @@ public class User implements UserDetails {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<GameUser> games = new ArrayList<>();
+    private List<GamePlayer> playedGames = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<GameAnticipator> anticipatedGames = new ArrayList<>();
 
     @Column(name = "determent")
     private boolean determent = false;
@@ -168,13 +175,6 @@ public class User implements UserDetails {
         return true;
     }
 
-    public List<GameUser> getGames() {
-        return games;
-    }
-
-    public void setgames(List<GameUser> games) {
-        this.games = games;
-    }
 
 
     public boolean isDeterment() {
@@ -183,5 +183,21 @@ public class User implements UserDetails {
 
     public void setDeterment(boolean determent) {
         this.determent = determent;
+    }
+
+    public List<GameAnticipator> getAnticipatedGames() {
+        return anticipatedGames;
+    }
+
+    public void setAnticipatedGames(List<GameAnticipator> anticipatedGames) {
+        this.anticipatedGames = anticipatedGames;
+    }
+
+    public List<GamePlayer> getPlayedGames() {
+        return playedGames;
+    }
+
+    public void setPlayedGames(List<GamePlayer> playedGames) {
+        this.playedGames = playedGames;
     }
 }

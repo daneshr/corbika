@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping( value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE )
-public class GameDefinitonController {
+public class GameDefinitionController {
 
     @Autowired
     private GameService gameService;
@@ -57,10 +57,10 @@ public class GameDefinitonController {
     }
 
     @RequestMapping("/game/vote")
-    public String user(Principal user,@RequestBody Vote vote) {
-        return "";
-//        String username = gameService.getUserGame("admin");
-//        String username = gameService.getUserGame(user.getName());
+    public void user(Principal user,@RequestBody Vote vote) {
+        String username = "admin";
+//        String username = user.getName();
+        gameService.voteGame(username,vote.getGameId(),vote.getVote());
 
 
     }

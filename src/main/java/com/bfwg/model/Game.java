@@ -43,14 +43,14 @@ public class Game {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<GameUser> players = new ArrayList<>();
+    private List<GamePlayer> players = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "game",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<GameUser> anticipators = new ArrayList<>();
+    private List<GameAnticipator> anticipators = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -76,19 +76,19 @@ public class Game {
         this.gameDefinition = gameDefinition;
     }
 
-    public List<GameUser> getPlayers() {
+    public List<GamePlayer> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<GameUser> players) {
+    public void setPlayers(List<GamePlayer> players) {
         this.players = players;
     }
 
-    public List<GameUser> getAnticipators() {
+    public List<GameAnticipator> getAnticipators() {
         return anticipators;
     }
 
-    public void setAnticipators(List<GameUser> anticipators) {
+    public void setAnticipators(List<GameAnticipator> anticipators) {
         this.anticipators = anticipators;
     }
 
@@ -101,33 +101,26 @@ public class Game {
     }
 
     public void addUserAsAnticipator(User user) {
-        GameUser gameUser = new GameUser(this, user);
-        gameUser.setAsPlayer(false);
+        GameAnticipator gameUser = new GameAnticipator(this, user);
+//        gameUser.setAsPlayer(false);
         anticipators.add(gameUser);
-        user.getGames().add(gameUser);
+        user.getAnticipatedGames().add(gameUser);
     }
 
     public void addUserAsPlayer(User user) {
-        GameUser gameUser = new GameUser(this, user);
-        gameUser.setAsPlayer(true);
+        GamePlayer gameUser = new GamePlayer(this, user);
+//        gameUser.setAsPlayer(true);
         players.add(gameUser);
-        user.getGames().add(gameUser);
+        user.getPlayedGames().add(gameUser);
     }
 
     public void removeAnticipatorGame(User user) {
-        removeUser(user,anticipators);
-    }
-    public void removePlayerGame(User user) {
-        removeUser(user,players);
-    }
-
-    private void removeUser(User user,List<GameUser> players){
-        for (Iterator<GameUser> iterator = players.iterator();
+        for (Iterator<GameAnticipator> iterator = anticipators.iterator();
              iterator.hasNext(); ) {
-            GameUser gameUser = iterator.next();
+            GameAnticipator gameUser = iterator.next();
 
-            if (gameUser.getUser().equals(this) &&
-                    gameUser.getGame().equals(user)) {
+            if (gameUser.getUser().equals(user) &&
+                    gameUser.getGame().equals(this)) {
                 iterator.remove();
                 gameUser.getGame().getAnticipators().remove(gameUser);
                 gameUser.setUser(null);
@@ -135,4 +128,20 @@ public class Game {
             }
         }
     }
+
+    public void removePlayerGame(User user) {
+        for (Iterator<GamePlayer> iterator = players.iterator();
+             iterator.hasNext(); ) {
+            GamePlayer gameUser = iterator.next();
+
+            if (gameUser.getUser().equals(user) &&
+                    gameUser.getGame().equals(this)) {
+                iterator.remove();
+                gameUser.getGame().getPlayers().remove(gameUser);
+                gameUser.setUser(null);
+                gameUser.setGame(null);
+            }
+        }
+    }
+
 }

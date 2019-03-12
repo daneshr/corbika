@@ -133,6 +133,10 @@ public class GameDefinition  {
     public void setChoices(List<Choice> choices) {
         this.choices = choices;
     }
+
+    public void clearChoices() {
+        this.choices.clear();
+    }
     public void addChoice(Choice choice) {
         this.choices.add(choice);
     }
