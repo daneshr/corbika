@@ -20,9 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by fan.jin on 2017-01-08.
- */
+
 public class TokenHelperTest {
 
     private static final String TEST_USERNAME = "testUser";

@@ -231,12 +231,8 @@ public class GameServiceImpl implements GameService {
             players.forEach(player -> gameDefinition.addChoice(new Choice(player.getId(), player.getFirstName() + "  " + player.getLastName())));
         }
         game.setGameDefinition(gameDefinition);
-
         gameRepository.save(game);
-//        gameDefinitionRepository.save(gameDefinition);
 
-        System.out.println();
-//        excludePlayers
 
     }
 

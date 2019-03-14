@@ -4,9 +4,7 @@ import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DevicePlatform;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by fanjin on 2017-10-07.
- */
+
 @Component
 public class DeviceDummy implements Device {
     private boolean normal;
