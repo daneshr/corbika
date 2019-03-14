@@ -28,4 +28,6 @@ public interface GameService {
     void closeVoting(Long gameId);
 
     List<UserScore> getScoreBoard();
+
+    List findRunning();
 }

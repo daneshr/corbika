@@ -61,7 +61,7 @@ public class GameServiceImpl implements GameService {
         for (GamePlayer gp : user.getPlayedGames()) {
             if (gp.getGame().isFinished()) {
                 UserScore tmp = new UserScore();
-                tmp.setGameName(gp.getGame().getGameDefinition().getName());
+                tmp.setGameDefinition(gp.getGame().getGameDefinition());
                 tmp.setUserFullName(user.getFirstName() + " " + user.getLastName());
                 tmp.setRole("player");
                 tmp.setScore(gp.getScore());
@@ -71,7 +71,7 @@ public class GameServiceImpl implements GameService {
         for (GameAnticipator ga : user.getAnticipatedGames()) {
             if (ga.getGame().isFinished()) {
                 UserScore tmp = new UserScore();
-                tmp.setGameName(ga.getGame().getGameDefinition().getName());
+                tmp.setGameDefinition(ga.getGame().getGameDefinition());
                 tmp.setUserFullName(user.getFirstName() + " " + user.getLastName());
                 tmp.setRole("predictor");
                 tmp.setScore(ga.getScore());
@@ -96,10 +96,10 @@ public class GameServiceImpl implements GameService {
             throw new RuntimeException("voting has not been closed yet!");
         }
         if (game.getPlayers().size() > 0) {
-            User user = userRepository.findByUsername(winner.getWinner());
-            game.getGameDefinition().setAnswer(user.getId());
+//            User user = userRepository.findByUsername(winner.getWinner());
+            game.getGameDefinition().setAnswer(winner.getWinnerId());
             for (GamePlayer gamePlayer : game.getPlayers()) {
-                if (gamePlayer.getUser().getId().compareTo(user.getId()) == 0) {
+                if (gamePlayer.getUser().getId().compareTo(winner.getWinnerId()) == 0) {
                     gamePlayer.setScore(game.getGameDefinition().getWinnerScore());
                 } else {
                     gamePlayer.setScore(0);
@@ -213,6 +213,17 @@ public class GameServiceImpl implements GameService {
             usersScore.add(cumulativeUserScore);
         }
         return usersScore;
+    }
+
+    @Override
+    public List findRunning() {
+        List<Game> games= gameRepository.findAll();
+        games.forEach(game -> {
+            game.setAnticipators(null);
+            game.setPlayers(null);
+        });
+        return games;
+
     }
 
     @Transactional

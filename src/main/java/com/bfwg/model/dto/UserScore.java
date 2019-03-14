@@ -1,8 +1,10 @@
 package com.bfwg.model.dto;
 
+import com.bfwg.model.GameDefinition;
+
 public class UserScore {
     private String userFullName;
-    private String gameName;
+    private GameDefinition gameDefinition;
     private String role;
     private int Score;
 
@@ -14,13 +16,6 @@ public class UserScore {
         this.userFullName = userFullName;
     }
 
-    public String getGameName() {
-        return gameName;
-    }
-
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
 
     public int getScore() {
         return Score;
@@ -36,5 +31,13 @@ public class UserScore {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public GameDefinition getGameDefinition() {
+        return gameDefinition;
+    }
+
+    public void setGameDefinition(GameDefinition gameDefinition) {
+        this.gameDefinition = gameDefinition;
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping( value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE )
-public class GameDefinitionController {
+public class GameController {
 
     @Autowired
     private GameService gameService;
@@ -39,6 +39,11 @@ public class GameDefinitionController {
     @RequestMapping(value = "/gamedef/admin/list", method = RequestMethod.GET)
     public ResponseEntity<List> getAllGameDefinitions() {
         return ResponseEntity.accepted().body((List) gameService.findAll());
+    }
+
+    @RequestMapping(value = "/game/admin/list", method = RequestMethod.GET)
+    public ResponseEntity<List> getAllGame() {
+        return ResponseEntity.accepted().body((List) gameService.findRunning());
     }
 
 

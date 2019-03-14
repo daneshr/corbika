@@ -2,7 +2,7 @@ package com.bfwg.model.dto;
 
 public class Winner {
     private Long gameId;
-    private String winner;
+    private Long winnerId;
 
     public Long getGameId() {
         return gameId;
@@ -12,11 +12,11 @@ public class Winner {
         this.gameId = gameId;
     }
 
-    public String getWinner() {
-        return winner;
+    public Long getWinnerId() {
+        return winnerId;
     }
 
-    public void setWinner(String winner) {
-        this.winner = winner;
+    public void setWinnerId(Long winnerId) {
+        this.winnerId = winnerId;
     }
 }
