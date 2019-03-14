@@ -70,10 +70,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/favicon.ico",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js"
+                        "/**/*.js",
+                        "/**/assets/**",
+                        "/**/images/**"
 
                 ).permitAll()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers("/**").authenticated()
                 .anyRequest().authenticated().and()
                 .addFilterBefore(new TokenAuthenticationFilter(tokenHelper, jwtUserDetailsService), BasicAuthenticationFilter.class);
 

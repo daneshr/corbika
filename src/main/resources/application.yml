@@ -6,3 +6,7 @@ jwt:
   expires_in: 9000
   mobile_expires_in: 9000
   secret: queenvictoria
+
+server:
+  address: 0.0.0.0
+  port: 9090
