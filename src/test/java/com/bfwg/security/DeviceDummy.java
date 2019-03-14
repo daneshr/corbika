@@ -1,4 +1,4 @@
-package com.bfwg.security;
+package ir.corbika.security;
 
 import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DevicePlatform;

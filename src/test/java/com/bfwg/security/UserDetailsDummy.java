@@ -1,4 +1,4 @@
-package com.bfwg.security;
+package ir.corbika.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

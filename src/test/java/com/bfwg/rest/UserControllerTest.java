@@ -1,4 +1,4 @@
-package com.bfwg.rest;
+package ir.corbika.rest;
 
 import org.junit.Before;
 import org.junit.Test;

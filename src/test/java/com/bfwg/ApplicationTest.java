@@ -1,4 +1,4 @@
-package com.bfwg;
+package ir.corbika;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

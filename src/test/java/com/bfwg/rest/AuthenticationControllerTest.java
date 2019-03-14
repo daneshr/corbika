@@ -1,13 +1,14 @@
-package com.bfwg.rest;
+package ir.corbika.rest;
 
-import com.bfwg.common.DeviceProvider;
-import com.bfwg.common.TimeProvider;
-import com.bfwg.model.Authority;
-import com.bfwg.model.User;
-import com.bfwg.model.UserRoleName;
-import com.bfwg.security.DeviceDummy;
-import com.bfwg.security.TokenHelper;
-import com.bfwg.service.impl.CustomUserDetailsService;
+import ir.corbika.common.DeviceProvider;
+import ir.corbika.common.TimeProvider;
+import ir.corbika.model.Authority;
+import ir.corbika.model.User;
+import ir.corbika.model.UserRoleName;
+import ir.corbika.security.DeviceDummy;
+import ir.corbika.rest.AuthenticationController;
+import ir.corbika.security.TokenHelper;
+import ir.corbika.service.impl.CustomUserDetailsService;
 import org.assertj.core.util.DateUtil;
 import org.junit.Before;
 import org.junit.Test;

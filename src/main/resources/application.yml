@@ -1,5 +1,5 @@
 app:
-  name: springboot-jwt-demo
+  name: corbika
 
 jwt:
   header: Authorization
@@ -10,15 +10,15 @@ jwt:
 server:
   address: 0.0.0.0
   port: 9090
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
-  datasource:
-    url: jdbc:mysql://s3.liara.ir:34914/corbika?useSSL=false&useUnicode=yes&characterEncoding=UTF-8
-    username: root
-    password: 0RblaqFmJv8y9EjfLIEOFlxO
-    driver-class-name: com.mysql.jdbc.Driver
+#spring:
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQL5Dialect
+#  datasource:
+#    url: jdbc:mysql://s3.liara.ir:34914/corbika?useSSL=false&useUnicode=yes&characterEncoding=UTF-8
+#    username: root
+#    password: 0RblaqFmJv8y9EjfLIEOFlxO
+#    driver-class-name: com.mysql.jdbc.Driver
