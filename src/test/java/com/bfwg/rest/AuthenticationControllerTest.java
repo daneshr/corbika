@@ -38,9 +38,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-/**
- * Created by fanjin on 2017-09-01.
- */
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AuthenticationControllerTest {

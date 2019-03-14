@@ -10,10 +10,6 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
-
 @Entity(name = "gameDefinition")
 @Table(name="game_definition")
 public class GameDefinition  {

@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
+
 
 @Entity(name = "Game")
 @Table(name="game")

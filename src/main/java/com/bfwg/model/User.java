@@ -12,9 +12,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by fan.jin on 2016-10-15.
- */
+
 
 @Entity
 @Table(name="USERS")
@@ -69,6 +67,21 @@ public class User implements UserDetails {
             orphanRemoval = true
     )
     private List<GameAnticipator> anticipatedGames = new ArrayList<>();
+
+    public List<SurveyUser> getSurveys() {
+        return surveys;
+    }
+
+    public void setSurveys(List<SurveyUser> surveys) {
+        this.surveys = surveys;
+    }
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<SurveyUser> surveys= new ArrayList<>();
 
     @Column(name = "determent")
     private boolean determent = false;

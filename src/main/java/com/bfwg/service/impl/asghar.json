@@ -1,0 +1,86 @@
+{
+  "name": "Core's Got Talent",
+  "description": "انتخاب بهترین شرکت کننده",
+  "choices": [
+    {
+      "choice": "منصوره صادقی",
+      "description": "BeatBox"
+    },
+    {
+      "choice": "گروه متوهم‌ها",
+      "description": "انرژی‌درمانی"
+    },
+    {
+      "choice": "الهام مشهدی",
+      "description": "خوانندگی (D:)"
+    },
+    {
+      "choice": "گروه جستاک",
+      "description": "تصنیف رعنا"
+    },
+    {
+      "choice": "پریسا افشارپور",
+      "description": "روبیک"
+    },
+    {
+      "choice": "الهام خدابنده لو",
+      "description": "گزارش ورزشی"
+    },
+    {
+      "choice": "حسن آخوندی",
+      "description": "شعبده‌بازی"
+    },
+    {
+      "choice": "LoDe Band",
+      "description": "سحر دختر نازم"
+    },
+    {
+      "choice": "سید حسین مسبوق",
+      "description": "Standup کمدی"
+    },
+    {
+      "choice": "عباس پیرمرادی",
+      "description": "شعبده‌بازی"
+    },
+    {
+      "choice": "راحله مروتی",
+      "description": "اطلاعات عمومی"
+    },
+    {
+      "choice": "صفاریان و خلیلی",
+      "description": "خوانندگی و آشپزی"
+    },
+    {
+      "choice": "امید مطهری",
+      "description": "اخبار بین‌المللی"
+    },
+    {
+      "choice": "مارال خطرناک",
+      "description": "پرتاب چاقو"
+    },
+    {
+      "choice": "آنیتا هادی‌زاده",
+      "description": "اپرا"
+    },
+    {
+      "choice": "آناهیتا افشارپاد",
+      "description": "پیشگوئی"
+    },
+    {
+      "choice": "تیم سپوص",
+      "description": "بهاران خجسته باد"
+    },
+    {
+      "choice": "سعید فخرایی",
+      "description": "غیب‌شدن"
+    },
+    {
+      "choice": "سعید شاملو",
+      "description": "روپایی"
+    },
+    {
+      "choice": "فردین اسدیان",
+      "description": "نوازندگی با لیوان"
+    }
+  ]
+}
