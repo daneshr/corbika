@@ -10,6 +10,7 @@ import ir.corbika.service.SurveyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,7 +20,7 @@ import java.security.Principal;
 
 
 @RestController
-@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SurveyController {
 
     @Autowired
@@ -27,13 +28,14 @@ public class SurveyController {
 
 
     @RequestMapping(value = "/survey/admin/add", method = RequestMethod.POST, consumes = "application/json")
-
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addSurvey(@RequestBody Survey survey) {
         surveyService.saveSurvey(survey);
         return ResponseEntity.accepted().body("ok");
     }
 
     @RequestMapping(value = "/survey/admin/finish", method = RequestMethod.POST, consumes = "application/json")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> updateWinner(@RequestBody IdContainer id) {
         surveyService.finish(id.getId());
         return ResponseEntity.accepted().body("ok");
@@ -41,6 +43,7 @@ public class SurveyController {
 
 
     @RequestMapping(value = "/survey/admin/start", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> start() {
         surveyService.start();
         return ResponseEntity.accepted().body("ok");
@@ -48,26 +51,24 @@ public class SurveyController {
 
 
     @RequestMapping(value = "/survey/mine", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('USER')")
     public SurveyContainer mine(Principal user) {
-        return surveyService.getMySurvey("admin");
+
+        return surveyService.getMySurvey(user.getName());
     }
 
     @RequestMapping("/survey/vote")
+    @PreAuthorize("hasRole('USER')")
     public void vote(Principal user,@RequestBody SurveySelection vote) {
-        String username = "admin";
-//        String username = user.getName();
+        String username = user.getName();
         surveyService.vote(username,vote.getSurveyId(),vote.getVote());
     }
 
     @RequestMapping(value = "/survey/result", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('USER')")
     public SurveyResultContainer result() {
         return surveyService.getResult();
     }
 
 
-//    @RequestMapping("/game/svote")
-//    public void sampleVote(@RequestBody SVote vote) {
-////        String username = vote.getUserName();
-//        gameService.voteGame(vote.getUsername(),vote.getGameId(),vote.getVote());
-//    }
 }

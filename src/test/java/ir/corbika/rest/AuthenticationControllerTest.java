@@ -6,7 +6,6 @@ import ir.corbika.model.Authority;
 import ir.corbika.model.User;
 import ir.corbika.model.UserRoleName;
 import ir.corbika.security.DeviceDummy;
-import ir.corbika.rest.AuthenticationController;
 import ir.corbika.security.TokenHelper;
 import ir.corbika.service.impl.CustomUserDetailsService;
 import org.assertj.core.util.DateUtil;
