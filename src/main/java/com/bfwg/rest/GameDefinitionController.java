@@ -1,18 +1,17 @@
 package com.bfwg.rest;
 
+import com.bfwg.model.Game;
 import com.bfwg.model.GameDefinition;
-import com.bfwg.model.User;
-import com.bfwg.model.dto.RunningGame;
-import com.bfwg.model.dto.Vote;
-import com.bfwg.model.dto.Winner;
+import com.bfwg.model.dto.*;
 import com.bfwg.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.text.html.parser.Entity;
 import java.security.Principal;
 import java.util.List;
 
@@ -25,28 +24,32 @@ public class GameDefinitionController {
     private GameService gameService;
 
 
-    @RequestMapping(value = "/gamedef/add", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/gamedef/admin/add", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity < String > addGameDefinition(@RequestBody GameDefinition gameDefinition) {
         gameService.saveGameDefinition(gameDefinition);
         return ResponseEntity.accepted().body("ok");
     }
 
-    @RequestMapping(value = "/gamedef/winner", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/gamedef/admin/finish", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity < String > updateWinner(@RequestBody Winner winner) {
-        gameService.updateWinner(winner);
+        gameService.finish(winner);
         return ResponseEntity.accepted().body("ok");
     }
 
-    @RequestMapping(value = "/gamedef/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/gamedef/admin/list", method = RequestMethod.GET)
     public ResponseEntity<List> getAllGameDefinitions() {
         return ResponseEntity.accepted().body((List) gameService.findAll());
     }
 
 
-    @RequestMapping(value = "/game/start", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/game/admin/start", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity < String > startGame(@RequestBody GameDefinition gameDefinition) {
         gameService.startGame(gameDefinition.getId());
         return ResponseEntity.accepted().body("ok");
+    }
+    @RequestMapping(value = "/game/admin/finish-voting", method = RequestMethod.POST, consumes = "application/json")
+    public void finishVoting(@RequestBody Game game) {
+        gameService.closeVoting(game.getId());
     }
 
     @RequestMapping(value = "/game/mine", method = RequestMethod.GET)
@@ -56,12 +59,29 @@ public class GameDefinitionController {
 
     }
 
+    @RequestMapping(value = "/game/scores", method = RequestMethod.GET)
+    public List<UserScore> getMyScores(Principal user) {
+        return gameService.getUserScores("admin");
+//        return gameService.getUserGame(user.getName());
+
+    }
+
+    @RequestMapping(value = "/game/scoreboard", method = RequestMethod.GET)
+    public List<UserScore> getScoreBoard() {
+        return gameService.getScoreBoard();
+
+    }
+
     @RequestMapping("/game/vote")
-    public void user(Principal user,@RequestBody Vote vote) {
+    public void vote(Principal user,@RequestBody Vote vote) {
         String username = "admin";
 //        String username = user.getName();
         gameService.voteGame(username,vote.getGameId(),vote.getVote());
+    }
 
-
+    @RequestMapping("/game/svote")
+    public void sampleVote(@RequestBody SVote vote) {
+//        String username = vote.getUserName();
+        gameService.voteGame(vote.getUsername(),vote.getGameId(),vote.getVote());
     }
 }

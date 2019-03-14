@@ -2,6 +2,7 @@ package com.bfwg.service.impl;
 
 import com.bfwg.model.*;
 import com.bfwg.model.dto.RunningGame;
+import com.bfwg.model.dto.UserScore;
 import com.bfwg.model.dto.Winner;
 import com.bfwg.repository.*;
 import com.bfwg.service.GameService;
@@ -50,17 +51,86 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void updateWinner(Winner winner) {
-        User user = userRepository.findByUsername(winner.getWinner());
-        GameDefinition gameDefinition = gameDefinitionRepository.findOne(winner.getGameId());
-        gameDefinition.setAnswer(user.getId());
-        gameDefinitionRepository.saveAndFlush(gameDefinition);
+    public List<UserScore> getUserScores(String username) {
+        return getUserScores(userRepository.findByUsername(username));
+    }
+
+
+    private List<UserScore> getUserScores(User user) {
+        List<UserScore> userScores = new ArrayList<>();
+        for (GamePlayer gp : user.getPlayedGames()) {
+            if (gp.getGame().isFinished()) {
+                UserScore tmp = new UserScore();
+                tmp.setGameName(gp.getGame().getGameDefinition().getName());
+                tmp.setUserFullName(user.getFirstName() + " " + user.getLastName());
+                tmp.setRole("player");
+                tmp.setScore(gp.getScore());
+                userScores.add(tmp);
+            }
+        }
+        for (GameAnticipator ga : user.getAnticipatedGames()) {
+            if (ga.getGame().isFinished()) {
+                UserScore tmp = new UserScore();
+                tmp.setGameName(ga.getGame().getGameDefinition().getName());
+                tmp.setUserFullName(user.getFirstName() + " " + user.getLastName());
+                tmp.setRole("predictor");
+                tmp.setScore(ga.getScore());
+                userScores.add(tmp);
+            }
+        }
+
+
+        return userScores;
     }
 
     @Override
+    public void finish(Winner winner) {
+        Game game = gameRepository.findOne(winner.getGameId());
+        if (game == null) {
+            throw new RuntimeException("game not found!");
+        } else if (!game.isRun()) {
+            throw new RuntimeException("game is not running!");
+        } else if (game.isFinished()) {
+            throw new RuntimeException("game is finished!");
+        } else if (!game.isVotingClosed()) {
+            throw new RuntimeException("voting has not been closed yet!");
+        }
+        if (game.getPlayers().size() > 0) {
+            User user = userRepository.findByUsername(winner.getWinner());
+            game.getGameDefinition().setAnswer(user.getId());
+            for (GamePlayer gamePlayer : game.getPlayers()) {
+                if (gamePlayer.getUser().getId().compareTo(user.getId()) == 0) {
+                    gamePlayer.setScore(game.getGameDefinition().getWinnerScore());
+                } else {
+                    gamePlayer.setScore(0);
+                }
+            }
+        }
+
+        Long anticipateAnswer = game.getGameDefinition().getAnswer();
+        if (anticipateAnswer < 1) {
+            throw new RuntimeException("answer not set!!");
+        }
+        for (GameAnticipator gameAnticipator : game.getAnticipators()) {
+            if (gameAnticipator.getVote()!=null &&  gameAnticipator.getVote().compareTo(game.getGameDefinition().getAnswer()) == 0) {
+                gameAnticipator.setScore(game.getGameDefinition().getAnticipateWinScore());
+            } else if(gameAnticipator.getVote()==null){
+                gameAnticipator.setScore(0);
+
+            }else {
+                gameAnticipator.setScore(game.getGameDefinition().getAnticipateLoseScore());
+            }
+        }
+        game.setFinished(true);
+        gameRepository.saveAndFlush(game);
+
+    }
+
+
+    @Override
     public void startGame(Long gameId) {
-        List runnings = gameRepository.findAllByRunning(true);
-        if (runnings.size() > 0) {
+        List run = gameRepository.findAllByRunAndFinished(true, false);
+        if (run.size() > 0) {
             throw new RuntimeException("there is a running game!");
         }
         GameDefinition gameDefinition = gameDefinitionRepository.findOne(gameId);
@@ -69,15 +139,15 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public RunningGame getUserGame(String username) {
-        List<Game> runnings = gameRepository.findAllByRunning(true);
+        List<Game> runnings = gameRepository.findAllByRunAndFinished(true, false);
         if (runnings.size() == 0) {
             throw new RuntimeException("there is no running game!");
-        }else if (runnings.size() != 1 ){
+        } else if (runnings.size() != 1) {
             throw new RuntimeException("more than one running game!");
         }
         Game candidateGame = runnings.get(0);
-        for (GameAnticipator gameUser:candidateGame.getAnticipators()) {
-            if (gameUser.getUser().getUsername().compareTo(username)==0){
+        for (GameAnticipator gameUser : candidateGame.getAnticipators()) {
+            if (gameUser.getUser().getUsername().compareTo(username) == 0) {
                 return new RunningGame(candidateGame.getId(), candidateGame.getGameDefinition());
             }
         }
@@ -90,9 +160,15 @@ public class GameServiceImpl implements GameService {
     public void voteGame(String username, Long gameId, Long choice) {
 
         User user = userRepository.findByUsername(username);
-        GameAnticipator ga= gameAnticipatorRepository.findOne(new GameUserId(gameId, user.getId()));
-        if (ga.getGame()==null){
+        GameAnticipator ga = gameAnticipatorRepository.findOne(new GameUserId(gameId, user.getId()));
+        if (ga==null ||ga.getGame() == null) {
             throw new RuntimeException("game not found!");
+        } else if (!ga.getGame().isRun()) {
+            throw new RuntimeException("game is not running!");
+        } else if (ga.getGame().isFinished()) {
+            throw new RuntimeException("game is finished!");
+        } else if (ga.getGame().isVotingClosed()) {
+            throw new RuntimeException("voting time is over!");
         }
         ga.setVote(choice);
         gameAnticipatorRepository.saveAndFlush(ga);
@@ -114,20 +190,45 @@ public class GameServiceImpl implements GameService {
 
     }
 
+    @Override
+    public void closeVoting(Long gameId) {
+        Game game = gameRepository.findOne(gameId);
+        if (game.isVotingClosed()) {
+            throw new RuntimeException("voting already closed!");
+        }
+        game.setVotingClosed(true);
+        gameRepository.saveAndFlush(game);
+    }
+
+    @Override
+    public List<UserScore> getScoreBoard() {
+        List<User> users = userRepository.findAll();
+        List<UserScore> usersScore = new ArrayList<>();
+        for (User user : users) {
+            List<UserScore> scores = getUserScores(user);
+            UserScore cumulativeUserScore = new UserScore();
+            cumulativeUserScore.setRole("cumulativeUserScore");
+            cumulativeUserScore.setUserFullName(user.getFirstName() + " " + user.getLastName());
+            cumulativeUserScore.setScore(scores.stream().map(score -> score.getScore()).reduce(Integer::sum).get());
+            usersScore.add(cumulativeUserScore);
+        }
+        return usersScore;
+    }
+
     @Transactional
     public void start(GameDefinition gameDefinition) {
         List<User> users = userRepository.findAllByDeterment(false);
         Game game = new Game();
         game.setName(gameDefinition.getName());
-        game.setRunning(true);
+        game.setRun(true);
         List<User> players = choosePlayers(gameDefinition.getPlayersCount(), users);
         List<User> anticipators = calculateAnticipator(users, players);
 
         players.forEach(user -> game.addUserAsPlayer(user));
         anticipators.forEach(user -> game.addUserAsAnticipator(user));
-        if(players.size()>0){
+        if (players.size() > 0) {
             gameDefinition.clearChoices();
-            players.forEach(player-> gameDefinition.addChoice(new Choice(player.getId(),player.getFirstName() + "  " + player.getLastName())));
+            players.forEach(player -> gameDefinition.addChoice(new Choice(player.getId(), player.getFirstName() + "  " + player.getLastName())));
         }
         game.setGameDefinition(gameDefinition);
 

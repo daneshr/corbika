@@ -26,8 +26,15 @@ public class Game {
     @ManyToOne(fetch = FetchType.EAGER)
     private GameDefinition gameDefinition;
 
-    @Column(name = "running")
-    private boolean running = false;
+    @Column(name = "run")
+    private boolean run = false;
+
+    @Column(name = "votingClosed")
+    private boolean votingClosed = false;
+
+
+    @Column(name = "finished")
+    private boolean finished = false;
 
 
     public Game() {
@@ -92,13 +99,6 @@ public class Game {
         this.anticipators = anticipators;
     }
 
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
 
     public void addUserAsAnticipator(User user) {
         GameAnticipator gameUser = new GameAnticipator(this, user);
@@ -144,4 +144,27 @@ public class Game {
         }
     }
 
+    public boolean isVotingClosed() {
+        return votingClosed;
+    }
+
+    public void setVotingClosed(boolean votingClosed) {
+        this.votingClosed = votingClosed;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public boolean isRun() {
+        return run;
+    }
+
+    public void setRun(boolean run) {
+        this.run = run;
+    }
 }
