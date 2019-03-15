@@ -11,7 +11,7 @@ public interface SurveyService {
     void saveSurvey(Survey survey);
 
 
-    void finish(Long id);
+    void finish();
 
     void start();
 

@@ -34,10 +34,10 @@ public class SurveyController {
         return ResponseEntity.accepted().body("ok");
     }
 
-    @RequestMapping(value = "/survey/admin/finish", method = RequestMethod.POST, consumes = "application/json")
+    @RequestMapping(value = "/survey/admin/finish")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> updateWinner(@RequestBody IdContainer id) {
-        surveyService.finish(id.getId());
+    public ResponseEntity<String> updateWinner() {
+        surveyService.finish();
         return ResponseEntity.accepted().body("ok");
     }
 

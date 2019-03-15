@@ -42,17 +42,29 @@ public class SurveyServiceImpl implements SurveyService {
     }
 
     @Override
-    public void finish(Long id) {
-        Survey survey =surveyRepository.findOne(id);
-        if (!survey.isStarted()) {
-            throw new RuntimeException("survey has not been started");
-        }else if (survey.isFinished()) {
-            throw new RuntimeException("survey already has finished!");
-        }
-        survey.setStarted(true);
-        survey.setFinished(true);
+    public void finish() {
+        List<Survey> surveys = surveyRepository.findAll();
 
-        surveyRepository.saveAndFlush(survey);
+        Survey candidateSurvey =null;
+        for (Survey survey:surveys) {
+            if (survey.isStarted() && !survey.isFinished()){
+                candidateSurvey = survey;
+                break;
+            }
+        }
+        if (candidateSurvey == null) {
+            throw new RuntimeException("no suitable found!");
+        }
+//
+//        if (!candidateSurvey.isStarted()) {
+//            throw new RuntimeException("survey has not been started");
+//        }else if (candidateSurvey.isFinished()) {
+//            throw new RuntimeException("survey already has finished!");
+//        }
+        candidateSurvey.setStarted(true);
+        candidateSurvey.setFinished(true);
+
+        surveyRepository.saveAndFlush(candidateSurvey);
     }
 
     @Override
