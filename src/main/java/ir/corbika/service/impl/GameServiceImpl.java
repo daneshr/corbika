@@ -215,6 +215,7 @@ public class GameServiceImpl implements GameService {
                 cumulativeUserScore.setScore(0);
             usersScore.add(cumulativeUserScore);
         }
+        usersScore.sort((o1, o2) -> (o2.getScore()-o1.getScore()));
         return usersScore;
     }
 
