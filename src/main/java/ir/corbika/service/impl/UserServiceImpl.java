@@ -36,6 +36,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resign(String username) {
         User user = userRepository.findByUsername(username);
+        if (user.isDeterment()){
+            throw new RuntimeException("user already resigned!");
+        }
         user.setDeterment(true);
         userRepository.saveAndFlush(user);
     }
@@ -43,6 +46,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void unResign(String username) {
         User user = userRepository.findByUsername(username);
+        if (!user.isDeterment()){
+            throw new RuntimeException("user already involved!");
+        }
         user.setDeterment(false);
         userRepository.saveAndFlush(user);
     }
