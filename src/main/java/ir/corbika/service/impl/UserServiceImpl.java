@@ -32,4 +32,18 @@ public class UserServiceImpl implements UserService {
         List<User> result = userRepository.findAll();
         return result;
     }
+
+    @Override
+    public void resign(String username) {
+        User user = userRepository.findByUsername(username);
+        user.setDeterment(true);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void unResign(String username) {
+        User user = userRepository.findByUsername(username);
+        user.setDeterment(false);
+        userRepository.saveAndFlush(user);
+    }
 }

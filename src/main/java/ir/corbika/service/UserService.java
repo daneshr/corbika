@@ -9,4 +9,8 @@ public interface UserService {
     User findById(Long id);
     User findByUsername(String username);
     List<User> findAll ();
+
+    void resign(String username);
+
+    void unResign(String username);
 }

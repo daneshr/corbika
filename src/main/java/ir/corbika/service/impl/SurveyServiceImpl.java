@@ -55,12 +55,7 @@ public class SurveyServiceImpl implements SurveyService {
         if (candidateSurvey == null) {
             throw new RuntimeException("no suitable found!");
         }
-//
-//        if (!candidateSurvey.isStarted()) {
-//            throw new RuntimeException("survey has not been started");
-//        }else if (candidateSurvey.isFinished()) {
-//            throw new RuntimeException("survey already has finished!");
-//        }
+
         candidateSurvey.setStarted(true);
         candidateSurvey.setFinished(true);
 
@@ -70,12 +65,15 @@ public class SurveyServiceImpl implements SurveyService {
     @Override
     public void start() {
         List<Survey> surveys = surveyRepository.findAll();
+        boolean startedBefore= false;
 
         Survey candidateSurvey =null;
         for (Survey survey:surveys) {
-            if (!survey.isStarted() || survey.isFinished()){
+            if (!survey.isStarted() && !survey.isFinished()){
                 candidateSurvey = survey;
                 break;
+            }else if(!survey.isStarted() && survey.isFinished()){
+                startedBefore = true;
             }
         }
         if (candidateSurvey == null) {
@@ -83,10 +81,11 @@ public class SurveyServiceImpl implements SurveyService {
         }
         candidateSurvey.setStarted(true);
         candidateSurvey.setFinished(false);
-        List<User> users = userRepository.findAll();
-
-        Survey finalCandidateSurvey = candidateSurvey;
-        users.forEach(user -> finalCandidateSurvey.addUser(user));
+        if (!startedBefore) {
+            List<User> users = userRepository.findAll();
+            Survey finalCandidateSurvey = candidateSurvey;
+            users.forEach(user -> finalCandidateSurvey.addUser(user));
+        }
 
         surveyRepository.save(candidateSurvey);
 

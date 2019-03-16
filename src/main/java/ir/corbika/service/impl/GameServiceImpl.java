@@ -202,7 +202,13 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<UserScore> getScoreBoard() {
-        List<User> users = userRepository.findAll();
+        List<User> oUsers = userRepository.findAll();
+        List<User> users = new ArrayList<>();
+        for (User user : oUsers) {
+            if (user.getUsername().compareTo("admin") != 0) {
+                users.add(user);
+            }
+        }
         List<UserScore> usersScore = new ArrayList<>();
         for (User user : users) {
             List<UserScore> scores = getUserScores(user);
@@ -215,7 +221,8 @@ public class GameServiceImpl implements GameService {
                 cumulativeUserScore.setScore(0);
             usersScore.add(cumulativeUserScore);
         }
-        usersScore.sort((o1, o2) -> (o2.getScore()-o1.getScore()));
+        usersScore.sort((o1, o2) -> (o2.getScore() - o1.getScore()));
+
         return usersScore;
     }
 
@@ -237,7 +244,7 @@ public class GameServiceImpl implements GameService {
         game.setName(gameDefinition.getName());
         game.setRun(true);
         List<User> players = choosePlayers(gameDefinition.getPlayersCount(), users);
-        List<User> anticipators = calculateAnticipator(users, players);
+        List<User> anticipators = calculateAnticipator(players);
 
         players.forEach(user -> game.addUserAsPlayer(user));
         anticipators.forEach(user -> game.addUserAsAnticipator(user));
@@ -251,7 +258,8 @@ public class GameServiceImpl implements GameService {
 
     }
 
-    private List<User> calculateAnticipator(List<User> users, List<User> players) {
+    private List<User> calculateAnticipator(List<User> players) {
+        List<User> users = findAll();
         List<User> anticipators = new ArrayList<>();
         for (User user : users) {
             boolean flag = false;

@@ -35,15 +35,19 @@ public class UserController {
         return this.userService.findAll();
     }
 
-
-    /*
-     *  We are not using userService.findByUsername here(we could),
-     *  so it is good that we are making sure that the user has role "ROLE_USER"
-     *  to access this endpoint.
-     */
-    @RequestMapping("/whoami")
+    @RequestMapping( method = GET, value= "/user/resign")
     @PreAuthorize("hasRole('USER')")
-    public User user(Principal user) {
-        return this.userService.findByUsername(user.getName());
+    public void resign(Principal user) {
+        this.userService.resign(user.getName());
     }
+
+    @RequestMapping( method = GET, value= "/user/un-resign")
+    @PreAuthorize("hasRole('USER')")
+    public void unResign(Principal user) {
+        this.userService.unResign(user.getName());
+    }
+
+
+
+
 }
