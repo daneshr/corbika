@@ -259,7 +259,7 @@ public class GameServiceImpl implements GameService {
     }
 
     private List<User> calculateAnticipator(List<User> players) {
-        List<User> users = findAll();
+        List<User> users = userRepository.findAll();
         List<User> anticipators = new ArrayList<>();
         for (User user : users) {
             boolean flag = false;
